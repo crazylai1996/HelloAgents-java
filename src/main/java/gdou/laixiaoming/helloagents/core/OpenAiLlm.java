@@ -7,7 +7,6 @@ import com.openai.models.ChatModel;
 import com.openai.models.chat.completions.ChatCompletion;
 import com.openai.models.chat.completions.ChatCompletionCreateParams;
 import gdou.laixiaoming.helloagents.core.exceptions.LlmException;
-import gdou.laixiaoming.helloagents.core.message.BaseMessage;
 import gdou.laixiaoming.helloagents.core.message.Message;
 
 import java.time.Duration;
