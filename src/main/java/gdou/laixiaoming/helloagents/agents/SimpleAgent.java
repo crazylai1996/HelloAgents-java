@@ -66,7 +66,7 @@ public class SimpleAgent extends Agent {
         if (systemPrompt != null && !systemPrompt.isBlank()) {
             messages.add(MessageFactory.system(systemPrompt));
         }
-        messages.addAll(history);
+        messages.addAll(history.snapshot());
         return messages;
     }
 }

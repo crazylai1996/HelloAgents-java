@@ -1,11 +1,11 @@
 package gdou.laixiaoming.helloagents.agents;
 
 import gdou.laixiaoming.helloagents.core.message.Message;
+import gdou.laixiaoming.helloagents.context.MessageHistoryManager;
 import gdou.laixiaoming.helloagents.core.Llm;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Agent抽象基类
@@ -17,12 +17,17 @@ public abstract class Agent {
     protected final String name;
     protected final Llm llm;
     protected final String systemPrompt;
-    protected final List<Message> history = new ArrayList<>();
+    protected final MessageHistoryManager history;
 
     protected Agent(String name, Llm llm, String systemPrompt) {
+        this(name, llm, systemPrompt, new MessageHistoryManager());
+    }
+
+    protected Agent(String name, Llm llm, String systemPrompt, MessageHistoryManager history) {
         this.name = name;
         this.llm = llm;
         this.systemPrompt = systemPrompt;
+        this.history = Objects.requireNonNull(history, "消息历史管理器不能为null");
     }
 
     /**
@@ -44,7 +49,7 @@ public abstract class Agent {
      * 获取历史记录的只读副本
      */
     public List<Message> getHistory() {
-        return Collections.unmodifiableList(new ArrayList<>(history));
+        return history.snapshot();
     }
 
     /**
