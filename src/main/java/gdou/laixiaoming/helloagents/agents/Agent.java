@@ -2,7 +2,6 @@ package gdou.laixiaoming.helloagents.agents;
 
 import gdou.laixiaoming.helloagents.core.message.Message;
 import gdou.laixiaoming.helloagents.context.MessageHistoryManager;
-import gdou.laixiaoming.helloagents.context.MessageCompressionPolicy;
 import gdou.laixiaoming.helloagents.context.MessageCompressionStrategies;
 import gdou.laixiaoming.helloagents.core.Llm;
 import gdou.laixiaoming.helloagents.core.message.MessageFactory;
@@ -57,8 +56,8 @@ public abstract class Agent {
 
     private static MessageHistoryManager createHistoryManager(Llm llm, int maxMessages) {
         Objects.requireNonNull(llm, "启用摘要压缩需要LLM实例");
-        return new MessageHistoryManager(maxMessages, MessageCompressionPolicy.auto(
-                MessageCompressionStrategies.summary(messages -> generateSummary(llm, messages))));
+        return new MessageHistoryManager(maxMessages, 
+            MessageCompressionStrategies.summary(messages -> generateSummary(llm, messages)));
     }
 
     private static String generateSummary(Llm llm, List<Message> messages) {

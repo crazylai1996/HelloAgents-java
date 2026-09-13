@@ -18,7 +18,7 @@ public final class MessageHistoryManager {
 
     private final Deque<Message> messages = new ArrayDeque<>();
     private final int maxMessages;
-    private final MessageCompressionPolicy compressionPolicy;
+    private final MessageCompressionStrategy messageCompressionStrategy;
 
     /**
      * 创建一个不限制消息数量的历史管理器。
@@ -36,14 +36,14 @@ public final class MessageHistoryManager {
 
     /**
      * @param maxMessages 保留的最大消息数量，必须大于0
-     * @param compressionPolicy 超限时选择压缩方式的策略
+     * @param messageCompressionStrategy 超限时选择压缩方式的策略
      */
-    public MessageHistoryManager(int maxMessages, MessageCompressionPolicy compressionPolicy) {
+    public MessageHistoryManager(int maxMessages, MessageCompressionStrategy messageCompressionStrategy) {
         if (maxMessages <= 0) {
             throw new IllegalArgumentException("消息历史容量必须大于0");
         }
         this.maxMessages = maxMessages;
-        this.compressionPolicy = Objects.requireNonNull(compressionPolicy, "压缩策略不能为null");
+        this.messageCompressionStrategy = Objects.requireNonNull(messageCompressionStrategy, "压缩策略不能为null");
     }
 
     /**
@@ -100,8 +100,8 @@ public final class MessageHistoryManager {
         while (messages.size() > maxMessages) {
             List<Message> snapshot = List.copyOf(messages);
             MessageCompressionStrategy strategy = Objects.requireNonNull(
-                    compressionPolicy.select(snapshot, maxMessages),
-                    "压缩策略选择器不能返回null");
+                    messageCompressionStrategy,
+                    "压缩策略不能为null");
             List<Message> compressed = strategy.compress(snapshot, maxMessages);
             validateCompressedMessages(compressed);
             if (compressed.size() >= snapshot.size()) {
